@@ -5,8 +5,9 @@
 #include <Windows.h>
 #include "SDRunoPlugin_RemoteBridgeSerialTimeout.h"
 
-class Serial
-{
+
+
+class Serial {
 public:
 	//Constructor
 	Serial();
@@ -18,20 +19,20 @@ public:
 
 
 	// Open a device
-	char    openDevice(const char *Device, const unsigned int Bauds);
+	char openDevice(const char *Device, const unsigned int Bauds);
 
 	// Close the current device
-	void    closeDevice();
+	void closeDevice();
 
 	//___________________________________________
 	// ::: Read/Write operation on characters :::
 
 
 	// Write a char
-	char    writeChar(char);
+	char writeChar(char);
 
 	// Read a char (with timeout)
-	char    readChar(char *pByte, const unsigned int TimeOut_ms = 0);
+	char readChar(char *pByte, const unsigned int TimeOut_ms = 0);
 
 
 	//________________________________________
@@ -39,13 +40,10 @@ public:
 
 
 	// Write a string
-	char    writeString(const char *String);
+	char writeString(const char *String);
 	// Read a string (with timeout)
-	int     readString(char *String,
-		char FinalChar,
-		unsigned int MaxNbBytes,
-		const unsigned int TimeOut_ms = 0);
-	int     readStringNoTimeOut(char *String, char FinalChar, unsigned int MaxNbBytes);
+	int readString(char *String, char FinalChar, unsigned int MaxNbBytes, const unsigned int TimeOut_ms = 0);
+	int readStringNoTimeOut(char *String, char FinalChar, unsigned int MaxNbBytes);
 
 
 
@@ -54,20 +52,20 @@ public:
 
 
 	// Write an array of bytes
-	char    writeBytes(const void *Buffer, const unsigned int NbBytes);
+	char writeBytes(const void *Buffer, const unsigned int NbBytes);
 
 	// Read an array of byte (with timeout)
-	int     readBytes(void *Buffer, unsigned int MaxNbBytes, const unsigned int TimeOut_ms = 0, unsigned int SleepDuration_us = 100);
+	int readBytes(void *Buffer, unsigned int MaxNbBytes, const unsigned int TimeOut_ms = 0, unsigned int SleepDuration_us = 100);
 
 	// _________________________
 	// ::: Special operation :::
 
 
 	// Empty the received buffer
-	void    flushReceiver();
+	void flushReceiver();
 
 	// Return the number of bytes in the received buffer
-	int     peekReceiver();
+	int peekReceiver();
 
 
 	// _________________________
@@ -75,19 +73,19 @@ public:
 
 
 	// Change CTR status
-	void    DTR(bool Status);
+	void DTR(bool Status);
 
 	// Change RTS status
-	void    RTS(bool Status);
+	void RTS(bool Status);
 
 	// Get CTS bit
-	bool    isCTS();
+	bool isCTS();
 
 	// Get DTR bit
-	bool    isDTR();
+	bool isDTR();
 
 	// Get CTS bit
-	bool    isRTS();
+	bool isRTS();
 
 	byte crc8(byte *buffer, byte size);
 
@@ -95,8 +93,8 @@ private:
 	// Read a string (no timeout)
 	//int     readStringNoTimeOut(char *String, char FinalChar, unsigned int MaxNbBytes);
 
-	HANDLE          hSerial;
-	COMMTIMEOUTS    timeouts;
+	HANDLE hSerial;
+	COMMTIMEOUTS timeouts;
 
 	byte crc;
 };

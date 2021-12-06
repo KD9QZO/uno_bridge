@@ -20,14 +20,14 @@
 // Forward reference
 class SDRunoPlugin_RemoteBridge;
 
-class SDRunoPlugin_RemoteBridgeUi
-{
-public:
 
-	SDRunoPlugin_RemoteBridgeUi(SDRunoPlugin_RemoteBridge& parent, IUnoPluginController& controller);
+
+class SDRunoPlugin_RemoteBridgeUi {
+public:
+	SDRunoPlugin_RemoteBridgeUi(SDRunoPlugin_RemoteBridge &parent, IUnoPluginController &controller);
 	~SDRunoPlugin_RemoteBridgeUi();
 
-	void HandleEvent(const UnoEvent& evt);
+	void HandleEvent(const UnoEvent &evt);
 	void FormClosed();
 
 	void ShowUi();
@@ -49,8 +49,7 @@ public:
 	std::string LoadPort();
 
 private:
-	
-	SDRunoPlugin_RemoteBridge & m_parent;
+	SDRunoPlugin_RemoteBridge &m_parent;
 	std::thread m_thread;
 	std::shared_ptr<SDRunoPlugin_RemoteBridgeForm> m_form;
 	void StartBridge(std::string port);
@@ -60,5 +59,5 @@ private:
 
 	std::mutex m_lock;
 
-	IUnoPluginController & m_controller;
+	IUnoPluginController &m_controller;
 };

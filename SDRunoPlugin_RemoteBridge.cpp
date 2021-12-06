@@ -10,8 +10,7 @@
 #include "SDRunoPlugin_RemoteBridge.h"
 #include "SDRunoPlugin_RemoteBridgeUi.h"
 
-const char* PreFormatString(const char * zcFormat, ...) 
-{
+const char *PreFormatString(const char *zcFormat, ...) {
 	// initialize use of the variable argument array
 	va_list vaArgs;
 	va_start(vaArgs, zcFormat);
@@ -68,22 +67,18 @@ SDRunoPlugin_RemoteBridge::SDRunoPlugin_RemoteBridge(IUnoPluginController& contr
 {
 }
 
-SDRunoPlugin_RemoteBridge::~SDRunoPlugin_RemoteBridge()
-{	
+SDRunoPlugin_RemoteBridge::~SDRunoPlugin_RemoteBridge() {
 }
 
-void SDRunoPlugin_RemoteBridge::HandleEvent(const UnoEvent& ev)
-{
-	m_form.HandleEvent(ev);	
+void SDRunoPlugin_RemoteBridge::HandleEvent(const UnoEvent &ev) {
+	m_form.HandleEvent(ev);
 }
 
-void SDRunoPlugin_RemoteBridge::WorkerFunction()
-{
-	
+void SDRunoPlugin_RemoteBridge::WorkerFunction() {
 	int cycles = 0;
 	byte crc;
-	if (isConnected) 
-	{
+
+	if (isConnected) {
 #ifdef DEBUG
 		OutputDebugStringA("Bridge worker is connected to port \r\n");
 #endif
@@ -96,8 +91,8 @@ void SDRunoPlugin_RemoteBridge::WorkerFunction()
 				{
 					error = "receiver peeked successfully";
 					char buffer[500];
-					Serial.readStringNoTimeOut(buffer, '\n', 500);					
-					sscanf(buffer, 
+					Serial.readStringNoTimeOut(buffer, '\n', 500);
+					sscanf(buffer,
 						"%hhd %hhd %hhd %hhd %hhd %hhd %hhd %hhd %d %hhd %lu %lu %lu %lu %lu %lu %d %d %d %d %d %lu",
 						&state.Demodulator,
 						&state.WfmDeemphasisMode,
@@ -120,14 +115,14 @@ void SDRunoPlugin_RemoteBridge::WorkerFunction()
 						&state.FmNoiseReductionEnable,
 						&state.AudioMute,
 						&state.BiasTEnable,
-						&state.fingerprint						
+						&state.fingerprint
 					);
-					
+
 //					crc = Serial.crc8((byte*)&state, sizeof(state)); // read crc frame complete
-//					
+//
 //					if (crc == state.fingerprint) {
 //#ifdef DEBUG
-//						OutputDebugStringA("CRC Check passed \r\n");						
+//						OutputDebugStringA("CRC Check passed \r\n");
 //#endif //DEBUG
 //					} else {
 //						// data corrupted
@@ -160,7 +155,7 @@ void SDRunoPlugin_RemoteBridge::WorkerFunction()
 						state.fingerprint);
 
 					//OutputDebugStringA("Mute:");
-					//m_controller.SetVfoFrequency(0, state.VfoFrequency);					
+					//m_controller.SetVfoFrequency(0, state.VfoFrequency);
 					//m_controller.SetDemodulatorType(0, (IUnoPluginController::DemodulatorType)(state.Demodulator));
 						//&state.WfmDeemphasisMode,
 						//&state.NoiseBlankerMode,
@@ -231,7 +226,7 @@ void SDRunoPlugin_RemoteBridge::WorkerFunction()
 			Sleep(100);
 #endif // DEBUG
 
-			//@todo: re-work me. 
+			//@todo: re-work me.
 			//Serial.writeString(PreFormatString(
 			//	"Demodulator: %hu \t VFO: %lu \t CenterFrequency: %lu \t FilterBandwidth: %hu \t CRC: %lu\r\n ",
 			//	state.Demodulator, state.VfoFrequency, state.CenterFrequency, state.FilterBandwidth, state.fingerprint
@@ -244,7 +239,7 @@ void SDRunoPlugin_RemoteBridge::WorkerFunction()
 		OutputDebugStringA("Bridge is not connected to port \r\n");
 #endif
 	}
-	
+
 	/*
 
 
@@ -254,11 +249,11 @@ void SDRunoPlugin_RemoteBridge::WorkerFunction()
 void SDRunoPlugin_RemoteBridge::StartBridge(std::string addr)
 {
 	std::string error = "default";
-	
+
 #ifdef DEBUG
 	OutputDebugStringA("Bridge is going to start core \r\n");
 #endif
-	
+
 	std::lock_guard<std::mutex> l(m_lock);
 	if (m_started)
 	{
@@ -278,11 +273,11 @@ void SDRunoPlugin_RemoteBridge::StartBridge(std::string addr)
 	}
 
 	Sleep(100);
-	
+
 	if (isConnected) {
 		m_worker = new std::thread(&SDRunoPlugin_RemoteBridge::WorkerFunction, this);
 	}
-	
+
 #ifdef DEBUG
 	OutputDebugStringA(error.c_str());
 #endif
@@ -290,7 +285,7 @@ void SDRunoPlugin_RemoteBridge::StartBridge(std::string addr)
 
 }
 
-void SDRunoPlugin_RemoteBridge::StopBridge() 
+void SDRunoPlugin_RemoteBridge::StopBridge()
 {
 	//Close port
 #ifdef DEBUG
@@ -317,7 +312,7 @@ void SDRunoPlugin_RemoteBridge::UpdateSampleRate()
 	sampleRate = (double)m_controller.GetSampleRate(0);
 }
 
-void SDRunoPlugin_RemoteBridge::UpdateFrequencies() 
+void SDRunoPlugin_RemoteBridge::UpdateFrequencies()
 {
 	state.CenterFrequency = (long int)m_controller.GetCenterFrequency(0);
 	state.VfoFrequency = (long int)m_controller.GetVfoFrequency(0);

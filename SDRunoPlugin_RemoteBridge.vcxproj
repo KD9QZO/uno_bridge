@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{02F5E67B-FBB3-4CE5-8368-6C1E8E2C6660}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>SDRunoPlugin_RemoteBridge</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -68,14 +68,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\Development\SDRPlay\plugins\include;D:\Development\SDRPlay\plugins\nana\include;D:\Development\SDRPlay\SDRuno\plugin-development\uno_bridge\include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;D:\Development\SDRPlay\plugins\nana\extrlib;D:\Development\SDRPlay\plugins\nana\build\bin</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>C:\Program Files %28x86%29\SDRplay\SDRuno\Plugins\</OutDir>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;D:\Development\SDRPlay\plugins\nana\extrlib;D:\Development\SDRPlay\plugins\nana\build\bin</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\Development\SDRPlay\plugins\include;D:\Development\SDRPlay\plugins\nana\include;D:\Development\SDRPlay\SDRuno\plugin-development\uno_bridge\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\nana\include;d:\btsync\general\projects\sdr\unoBridge\plugins\SDRunoPlugin_Template\include</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;C:\nana\extrlib;C:\nana\build\bin</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\Development\SDRPlay\plugins\include;D:\Development\SDRPlay\plugins\nana\include;D:\Development\SDRPlay\SDRuno\plugin-development\uno_bridge\include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;D:\Development\SDRPlay\plugins\nana\extrlib;D:\Development\SDRPlay\plugins\nana\build\bin</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\Development\SDRPlay\plugins\include;D:\Development\SDRPlay\plugins\nana\include;D:\Development\SDRPlay\SDRuno\plugin-development\uno_bridge\include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);D:\Development\SDRPlay\plugins\nana\extrlib;D:\Development\SDRPlay\plugins\nana\build\bin</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,6 +121,16 @@
     <ResourceCompile>
       <ShowProgress>true</ShowProgress>
     </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>DEBUG;_DEBUG;_WINDLL;_SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <UndefinePreprocessorDefinitions>NDEBUG;_NDEBUG;__DOXYGEN__</UndefinePreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
