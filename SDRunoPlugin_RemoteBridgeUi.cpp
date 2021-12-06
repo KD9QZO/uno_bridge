@@ -23,24 +23,20 @@ using namespace std;
 
 
 // Ui constructor - load the Ui control into a thread
-SDRunoPlugin_RemoteBridgeUi::SDRunoPlugin_RemoteBridgeUi(SDRunoPlugin_RemoteBridge& parent, IUnoPluginController& controller) :
-	m_parent(parent),
-	m_form(nullptr),
-	m_controller(controller)
-{
+SDRunoPlugin_RemoteBridgeUi::SDRunoPlugin_RemoteBridgeUi(SDRunoPlugin_RemoteBridge &parent, IUnoPluginController &controller) : m_parent(parent), m_form(nullptr), m_controller(controller) {
 	m_thread = std::thread(&SDRunoPlugin_RemoteBridgeUi::ShowUi, this);
 }
 
+
 // Ui destructor (the nana::API::exit_all();) is required if using Nana UI library
-SDRunoPlugin_RemoteBridgeUi::~SDRunoPlugin_RemoteBridgeUi()
-{	
+SDRunoPlugin_RemoteBridgeUi::~SDRunoPlugin_RemoteBridgeUi() {
 	nana::API::exit_all();
-	m_thread.join();	
+	m_thread.join();
 }
 
+
 // Show and execute the form
-void SDRunoPlugin_RemoteBridgeUi::ShowUi()
-{	
+void SDRunoPlugin_RemoteBridgeUi::ShowUi() {
 	m_lock.lock();
 	m_form = std::make_shared<SDRunoPlugin_RemoteBridgeForm>(*this, m_controller);
 	m_lock.unlock();
@@ -48,270 +44,268 @@ void SDRunoPlugin_RemoteBridgeUi::ShowUi()
 	m_form->Run();
 }
 
+
 // Load X from the ini file (if exists)
 // TODO: Change RemoteBridge to plugin name
-int SDRunoPlugin_RemoteBridgeUi::LoadX()
-{
+int SDRunoPlugin_RemoteBridgeUi::LoadX() {
 	std::string tmp;
 	m_controller.GetConfigurationKey("RemoteBridge.X", tmp);
-	if (tmp.empty())
-	{
+	if (tmp.empty()) {
 		return -1;
 	}
 	return stoi(tmp);
 }
+
 
 // Load Y from the ini file (if exists)
 // TODO: Change RemoteBridge to plugin name
-int SDRunoPlugin_RemoteBridgeUi::LoadY()
-{
+int SDRunoPlugin_RemoteBridgeUi::LoadY() {
 	std::string tmp;
 	m_controller.GetConfigurationKey("RemoteBridge.Y", tmp);
-	if (tmp.empty())
-	{
+	if (tmp.empty()) {
 		return -1;
 	}
 	return stoi(tmp);
 }
 
-int SDRunoPlugin_RemoteBridgeUi::GetPortIndex()
-{
+
+int SDRunoPlugin_RemoteBridgeUi::GetPortIndex() {
 	return m_form->GetPortIndex();
 }
 
+
 // Handle events from SDRuno
 // TODO: code what to do when receiving relevant events
-void SDRunoPlugin_RemoteBridgeUi::HandleEvent(const UnoEvent& ev)
-{
-	switch (ev.GetType())
-	{
-	case UnoEvent::UndefinedEvent: //UndefinedEvent = 0
+void SDRunoPlugin_RemoteBridgeUi::HandleEvent(const UnoEvent &ev) {
+	switch (ev.GetType()) {
+		case UnoEvent::UndefinedEvent: //UndefinedEvent = 0
 #ifdef DEBUG
-		OutputDebugStringA("UndefinedEvent = 0 \r\n");
+			OutputDebugStringA("UndefinedEvent = 0 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::DemodulatorChanged: //DemodulatorChanged = 1
+		case UnoEvent::DemodulatorChanged: //DemodulatorChanged = 1
 #ifdef DEBUG
-		OutputDebugStringA("DemodulatorChanged = 1 \r\n");
+			OutputDebugStringA("DemodulatorChanged = 1 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::BandwidthChanged: //BandwidthChanged = 2
+		case UnoEvent::BandwidthChanged: //BandwidthChanged = 2
 #ifdef DEBUG
-		OutputDebugStringA("BandwidthChanged = 2 \r\n");
+			OutputDebugStringA("BandwidthChanged = 2 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::FrequencyChanged: //FrequencyChanged = 3
+		case UnoEvent::FrequencyChanged: //FrequencyChanged = 3
 #ifdef DEBUG
-		OutputDebugStringA("FrequencyChanged = 3 \r\n");
+			OutputDebugStringA("FrequencyChanged = 3 \r\n");
 #endif DEBUG
-		m_parent.UpdateFrequencies();
-		break;
+			m_parent.UpdateFrequencies();
+			break;
 
-	case UnoEvent::CenterFrequencyChanged: //CenterFrequencyChanged = 4
+		case UnoEvent::CenterFrequencyChanged: //CenterFrequencyChanged = 4
 #ifdef DEBUG
-		OutputDebugStringA("CenterFrequencyChanged = 4 \r\n");
+			OutputDebugStringA("CenterFrequencyChanged = 4 \r\n");
 #endif DEBUG
-		m_parent.UpdateFrequencies();
-		break;
+			m_parent.UpdateFrequencies();
+			break;
 
-	case UnoEvent::SampleRateChanged: //SampleRateChanged = 5
+		case UnoEvent::SampleRateChanged: //SampleRateChanged = 5
 #ifdef DEBUG
-		OutputDebugStringA("SampleRateChanged = 5 \r\n");
+			OutputDebugStringA("SampleRateChanged = 5 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::StreamingStarted: //StreamingStarted = 6
+		case UnoEvent::StreamingStarted: //StreamingStarted = 6
 #ifdef DEBUG
-		OutputDebugStringA("StreamingStarted = 6 \r\n");
+			OutputDebugStringA("StreamingStarted = 6 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::StreamingStopped: //StreamingStopped = 7
+		case UnoEvent::StreamingStopped: //StreamingStopped = 7
 #ifdef DEBUG
-		OutputDebugStringA("StreamingStopped = 7 \r\n");
+			OutputDebugStringA("StreamingStopped = 7 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::SquelchEnableChanged: //SquelchEnableChanged = 8
+		case UnoEvent::SquelchEnableChanged: //SquelchEnableChanged = 8
 #ifdef DEBUG
-		OutputDebugStringA("SquelchEnableChanged = 8 \r\n");
+			OutputDebugStringA("SquelchEnableChanged = 8 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::SquelchThresholdChanged: //SquelchThresholdChanged = 9
+		case UnoEvent::SquelchThresholdChanged: //SquelchThresholdChanged = 9
 #ifdef DEBUG
-		OutputDebugStringA("SquelchThresholdChanged = 9 \r\n");
+			OutputDebugStringA("SquelchThresholdChanged = 9 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::AgcThresholdChanged: //AgcThresholdChanged = 10
+		case UnoEvent::AgcThresholdChanged: //AgcThresholdChanged = 10
 #ifdef DEBUG
-		OutputDebugStringA("AgcThresholdChanged = 10 \r\n");
+			OutputDebugStringA("AgcThresholdChanged = 10 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::AgcModeChanged: //AgcModeChanged = 11
+		case UnoEvent::AgcModeChanged: //AgcModeChanged = 11
 #ifdef DEBUG
-		OutputDebugStringA("AgcModeChanged = 11 \r\n");
+			OutputDebugStringA("AgcModeChanged = 11 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::NoiseBlankerLevelChanged: //NoiseBlankerLevelChanged = 12
+		case UnoEvent::NoiseBlankerLevelChanged: //NoiseBlankerLevelChanged = 12
 #ifdef DEBUG
-		OutputDebugStringA("NoiseBlankerLevelChanged = 12 \r\n");
+			OutputDebugStringA("NoiseBlankerLevelChanged = 12 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::NoiseReductionLevelChanged: //NoiseReductionLevelChanged = 13
+		case UnoEvent::NoiseReductionLevelChanged: //NoiseReductionLevelChanged = 13
 #ifdef DEBUG
-		OutputDebugStringA("NoiseReductionLevelChanged = 13 \r\n");
+			OutputDebugStringA("NoiseReductionLevelChanged = 13 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::CwPeakFilterThresholdChanged: //CwPeakFilterThresholdChanged = 14
+		case UnoEvent::CwPeakFilterThresholdChanged: //CwPeakFilterThresholdChanged = 14
 #ifdef DEBUG
-		OutputDebugStringA("CwPeakFilterThresholdChanged = 14 \r\n");
+			OutputDebugStringA("CwPeakFilterThresholdChanged = 14 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::FmNoiseReductionEnabledChanged: //FmNoiseReductionEnabledChanged = 15
+		case UnoEvent::FmNoiseReductionEnabledChanged: //FmNoiseReductionEnabledChanged = 15
 #ifdef DEBUG
-		OutputDebugStringA("FmNoiseReductionEnabledChanged = 15 \r\n");
+			OutputDebugStringA("FmNoiseReductionEnabledChanged = 15 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::FmNoiseReductionThresholdChanged: //FmNoiseReductionThresholdChanged = 16
+		case UnoEvent::FmNoiseReductionThresholdChanged: //FmNoiseReductionThresholdChanged = 16
 #ifdef DEBUG
-		OutputDebugStringA("FmNoiseReductionThresholdChanged = 16 \r\n");
+			OutputDebugStringA("FmNoiseReductionThresholdChanged = 16 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::WfmDeemphasisModeChanged: //WfmDeemphasisModeChanged = 17
+		case UnoEvent::WfmDeemphasisModeChanged: //WfmDeemphasisModeChanged = 17
 #ifdef DEBUG
-		OutputDebugStringA("WfmDeemphasisModeChanged = 17 \r\n");
+			OutputDebugStringA("WfmDeemphasisModeChanged = 17 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::AudioVolumeChanged: //AudioVolumeChanged = 18
+		case UnoEvent::AudioVolumeChanged: //AudioVolumeChanged = 18
 #ifdef DEBUG
-		OutputDebugStringA("AudioVolumeChanged = 18 \r\n");
+			OutputDebugStringA("AudioVolumeChanged = 18 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::AudioMuteChanged: //AudioMuteChanged = 19
+		case UnoEvent::AudioMuteChanged: //AudioMuteChanged = 19
 #ifdef DEBUG
-		OutputDebugStringA("AudioMuteChanged = 19 \r\n");
+			OutputDebugStringA("AudioMuteChanged = 19 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::IFGainChanged: //IFGainChanged = 20
+		case UnoEvent::IFGainChanged: //IFGainChanged = 20
 #ifdef DEBUG
-		OutputDebugStringA("IFGainChanged = 20 \r\n");
+			OutputDebugStringA("IFGainChanged = 20 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::SavingWorkspace: //SavingWorkspace = 21
+		case UnoEvent::SavingWorkspace: //SavingWorkspace = 21
 #ifdef DEBUG
-		OutputDebugStringA("SavingWorkspace = 21 \r\n");
+			OutputDebugStringA("SavingWorkspace = 21 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::VRXCountChanged: //VRXCountChanged = 22
+		case UnoEvent::VRXCountChanged: //VRXCountChanged = 22
 #ifdef DEBUG
-		OutputDebugStringA("VRXCountChanged = 22 \r\n");
+			OutputDebugStringA("VRXCountChanged = 22 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::VRXStateChanged: //VRXStateChanged = 23
+		case UnoEvent::VRXStateChanged: //VRXStateChanged = 23
 #ifdef DEBUG
-		OutputDebugStringA("VRXStateChanged = 23 \r\n");
+			OutputDebugStringA("VRXStateChanged = 23 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::StepSizeChanged: //StepSizeChanged = 24
+		case UnoEvent::StepSizeChanged: //StepSizeChanged = 24
 #ifdef DEBUG
-		OutputDebugStringA("SavingWorkspace = 21 \r\n");
+			OutputDebugStringA("SavingWorkspace = 21 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::VFOChanged: //VFOChanged = 25
+		case UnoEvent::VFOChanged: //VFOChanged = 25
 #ifdef DEBUG
-		OutputDebugStringA("VFOChanged = 25 \r\n");
+			OutputDebugStringA("VFOChanged = 25 \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::ClosingDown: //ClosingDown = 26
+		case UnoEvent::ClosingDown: //ClosingDown = 26
 #ifdef DEBUG
-		OutputDebugStringA("ClosingDown = 26 \r\n");
-		FormClosed();
+			OutputDebugStringA("ClosingDown = 26 \r\n");
+			FormClosed();
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::SP1MinFreqChanged: //SP1MinFreqChanged = 27
+		case UnoEvent::SP1MinFreqChanged: //SP1MinFreqChanged = 27
 #ifdef DEBUG
-		OutputDebugStringA("SP1MinFreqChanged = 27 \r\n");
+			OutputDebugStringA("SP1MinFreqChanged = 27 \r\n");
 #endif DEBUG
-		m_parent.UpdateFrequencies();
-		break;
+			m_parent.UpdateFrequencies();
+			break;
 
-	case UnoEvent::SP1MaxFreqChanged: //SP1MaxFreqChanged = 28
+		case UnoEvent::SP1MaxFreqChanged: //SP1MaxFreqChanged = 28
 #ifdef DEBUG
-		OutputDebugStringA("SP1MaxFreqChanged = 28 \r\n");
-		m_parent.UpdateFrequencies();
+			OutputDebugStringA("SP1MaxFreqChanged = 28 \r\n");
+			m_parent.UpdateFrequencies();
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::BiasTEnableChanged: //BiasTEnableChanged = 29
+		case UnoEvent::BiasTEnableChanged: //BiasTEnableChanged = 29
 #ifdef DEBUG
-		OutputDebugStringA("BiasTEnableChanged \r\n");
+			OutputDebugStringA("BiasTEnableChanged \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::SP1MinPowerChanged: //SP1MinPowerChanged = 30
+		case UnoEvent::SP1MinPowerChanged: //SP1MinPowerChanged = 30
 #ifdef DEBUG
-		OutputDebugStringA("SP1MinPowerChanged \r\n");
+			OutputDebugStringA("SP1MinPowerChanged \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	case UnoEvent::SP1MaxPowerChanged: //SP1MaxPowerChanged = 31
+		case UnoEvent::SP1MaxPowerChanged: //SP1MaxPowerChanged = 31
 #ifdef DEBUG
-		OutputDebugStringA("SP1MaxPowerChanged \r\n");
+			OutputDebugStringA("SP1MaxPowerChanged \r\n");
 #endif DEBUG
-		break;
+			break;
 
-	default:
+		default:
 #ifdef DEBUG
-		OutputDebugStringA("Default event case \r\n");
+			OutputDebugStringA("Default event case \r\n");
 #endif DEBUG
-		break;
+			break;
 	}
 }
+
 
 void SDRunoPlugin_RemoteBridgeUi::EnumeratePorts() {
 	TCHAR pName[MAX_PORT_NUM][MAX_STR_LEN];
 	int i;
 	int n;
 
-	char* nativeLocale;
+	char *nativeLocale;
 
 	nativeLocale = _strdup(setlocale(LC_CTYPE, NULL));
-	
+
 	SDRunoPlugin_RemoteBridgeUi::PortsEnumerator(&n, &pName[0][0], MAX_STR_LEN);
-	
+
 	setlocale(LC_CTYPE, "");
-	
+
 	for (i = 0; i < n; i++) {
 		ports.push_back(&pName[i][0]);
 	}
-	
+
 	setlocale(LC_CTYPE, nativeLocale);
 }
 
-bool SDRunoPlugin_RemoteBridgeUi::PortsEnumerator(int *pNumber, TCHAR *pPortName, int strMaxLen)
-{
+
+bool SDRunoPlugin_RemoteBridgeUi::PortsEnumerator(int *pNumber, TCHAR *pPortName, int strMaxLen) {
 	int i, jj;
 	INT ret;
 
@@ -331,72 +325,61 @@ bool SDRunoPlugin_RemoteBridgeUi::PortsEnumerator(int *pNumber, TCHAR *pPortName
 
 	VER_SET_CONDITION(dwlConditionMask, VER_PLATFORMID, VER_EQUAL);
 
-	if (FALSE == VerifyVersionInfo(&osvi, VER_PLATFORMID, dwlConditionMask))
-	{
+	if (FALSE == VerifyVersionInfo(&osvi, VER_PLATFORMID, dwlConditionMask)) {
 		DWORD dwError = GetLastError();
 		//_tprintf(TEXT("VerifyVersionInfo error, %d\n", dwError));
 		return false;
-	}/*if*/
+	} /*if*/
 
 
 	pDevices = NULL;
 
 	nChars = 4096;
-	pDevices = (TCHAR*)HeapAlloc(GetProcessHeap(),
-		HEAP_GENERATE_EXCEPTIONS, nChars * sizeof(TCHAR));
+	pDevices = (TCHAR *)HeapAlloc(GetProcessHeap(), HEAP_GENERATE_EXCEPTIONS, nChars * sizeof(TCHAR));
 
-	while (0 < nChars)
-	{
+	while (0 < nChars) {
 		dwChars = QueryDosDevice(NULL, pDevices, nChars);
 
-		if (0 == dwChars)
-		{
+		if (0 == dwChars) {
 			DWORD dwError = GetLastError();
 
-			if (ERROR_INSUFFICIENT_BUFFER == dwError)
-			{
+			if (ERROR_INSUFFICIENT_BUFFER == dwError) {
 				nChars *= 2;
 				HeapFree(GetProcessHeap(), 0, pDevices);
-				pDevices = (TCHAR*)HeapAlloc(GetProcessHeap(),
-					HEAP_GENERATE_EXCEPTIONS, nChars * sizeof(TCHAR));
+				pDevices = (TCHAR *)HeapAlloc(GetProcessHeap(), HEAP_GENERATE_EXCEPTIONS, nChars * sizeof(TCHAR));
 
 				continue;
-			}/*if ERROR_INSUFFICIENT_BUFFER == dwError*/
+			} /*if ERROR_INSUFFICIENT_BUFFER == dwError*/
 
 			_tprintf(TEXT("QueryDosDevice error, %d\n", dwError));
 			return false;
-		}/*if */
+		} /*if */
 
 
 		//printf("dwChars = %d\n", dwChars);
 		i = 0;
 		jj = 0;
-		while (TEXT('\0') != pDevices[i])
-		{
-			TCHAR* pszCurrentDevice;
+		while (TEXT('\0') != pDevices[i]) {
+			TCHAR *pszCurrentDevice;
 			size_t nLen;
 			pszCurrentDevice = &(pDevices[i]);
 			nLen = _tcslen(pszCurrentDevice);
 
 			//_tprintf(TEXT("%s\n"), &pTargetPathStr[i]);
-			if (3 < nLen)
-			{
-				if ((0 == _tcsnicmp(pszCurrentDevice, TEXT("COM"), 3))
-					&& FALSE != isdigit(pszCurrentDevice[3]))
-				{
-					//Work out the port number                
-					_tcsncpy(pPortName + jj * strMaxLen,
-						pszCurrentDevice, strMaxLen);
+			if (3 < nLen) {
+				if ((0 == _tcsnicmp(pszCurrentDevice, TEXT("COM"), 3)) && FALSE != isdigit(pszCurrentDevice[3])) {
+					//Work out the port number
+					_tcsncpy(pPortName + jj * strMaxLen, pszCurrentDevice, strMaxLen);
 					jj++;
 
 				}
 			}
 
 			i += (nLen + 1);
-				}
+		}
 
 		break;
-			}/*while*/
+	} /*while*/
 
 	if (NULL != pDevices)
 		HeapFree(GetProcessHeap(), 0, pDevices);
@@ -408,14 +391,12 @@ bool SDRunoPlugin_RemoteBridgeUi::PortsEnumerator(int *pNumber, TCHAR *pPortName
 		ret = TRUE;
 
 	return ret;
-		}/*EnumerateComPortByQueryDosDevice*/
+} /*EnumerateComPortByQueryDosDevice*/
 
-std::string SDRunoPlugin_RemoteBridgeUi::LoadPort()
-{
+std::string SDRunoPlugin_RemoteBridgeUi::LoadPort() {
 	std::string tmp;
 	m_controller.GetConfigurationKey("Bridge.Port", tmp);
-	if (tmp.empty()) 
-	{
+	if (tmp.empty()) {
 		return "";
 	}
 
@@ -423,35 +404,30 @@ std::string SDRunoPlugin_RemoteBridgeUi::LoadPort()
 
 }
 
-bool SDRunoPlugin_RemoteBridgeUi::IsRunning()
-{
+
+bool SDRunoPlugin_RemoteBridgeUi::IsRunning() {
 	return m_parent.IsRunning();
 }
 
-void SDRunoPlugin_RemoteBridgeUi::StartButtonClicked(std::string addr)
-{
-	if (!m_started)
-	{
+
+void SDRunoPlugin_RemoteBridgeUi::StartButtonClicked(std::string addr) {
+	if (!m_started) {
 		StartBridge(addr);
-	}
-	else 
-	{
+	} else {
 		StopBridge();
 	}
 }
 
-void SDRunoPlugin_RemoteBridgeUi::StartBridge(std::string addr)
-{
+
+void SDRunoPlugin_RemoteBridgeUi::StartBridge(std::string addr) {
 #ifdef DEBUG
-		OutputDebugStringA("Bridge is going to start UI wrapper on port \r\n");
+	OutputDebugStringA("Bridge is going to start UI wrapper on port \r\n");
 #endif
 
 	std::lock_guard<std::mutex> l(m_lock);
-	if (!m_started)
-	{
+	if (!m_started) {
 		m_parent.StartBridge(addr);
-		if (m_form != nullptr) 
-		{
+		if (m_form != nullptr) {
 			m_form->SetStartButtonCaption("Stop");
 			m_form->SetPrtComboBoxState(false);
 			m_form->StartTimer();
@@ -461,16 +437,16 @@ void SDRunoPlugin_RemoteBridgeUi::StartBridge(std::string addr)
 	}
 }
 
-void SDRunoPlugin_RemoteBridgeUi::StopBridge()
-{
+
+void SDRunoPlugin_RemoteBridgeUi::StopBridge() {
 #ifdef DEBUG
 	OutputDebugStringA("Bridge is going to stop UI wrapper \r\n");
 #endif
 
 }
 
+
 // Required to make sure the plugin is correctly unloaded when closed
-void SDRunoPlugin_RemoteBridgeUi::FormClosed()
-{
+void SDRunoPlugin_RemoteBridgeUi::FormClosed() {
 	m_controller.RequestUnload(&m_parent);
 }

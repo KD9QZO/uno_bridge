@@ -31,75 +31,76 @@
 
 class SDRunoPlugin_RemoteBridgeUi;
 
-class SDRunoPlugin_RemoteBridgeForm : public nana::form
-{
+
+
+class SDRunoPlugin_RemoteBridgeForm: public nana::form {
 
 public:
 	//enumerator
 	typedef std::vector<std::basic_string<TCHAR>> StringVector;
 	StringVector portsList;
 
-	SDRunoPlugin_RemoteBridgeForm(SDRunoPlugin_RemoteBridgeUi& parent, IUnoPluginController& controller);		
+	SDRunoPlugin_RemoteBridgeForm(SDRunoPlugin_RemoteBridgeUi &parent, IUnoPluginController &controller);
 	~SDRunoPlugin_RemoteBridgeForm();
 
-	void SetStartButtonCaption(std::string text)
-	{
+
+	void SetStartButtonCaption(std::string text) {
 		startBtn.caption(text);
 	}
 
-	void SetPrtComboBoxState(bool state)
-	{
+
+	void SetPrtComboBoxState(bool state) {
 		portCb.enabled(state);
 	}
 
-	int GetPortIndex()
-	{
+
+	int GetPortIndex() {
 		return portCb.option();
 	}
 
-	void StartTimer()
-	{
+
+	void StartTimer() {
 		m_timerCount = 0.0;
 		m_timer.start();
 	}
 
-	void StopTimer()
-	{
+
+	void StopTimer() {
 		m_timer.stop();
 	}
-	
-	void Run();
-	
-private:
 
+
+	void Run();
+
+private:
 	void Setup();
 
 	// The following is to set up the panel graphic to look like a standard SDRuno panel
-	nana::picture bg_border{ *this, nana::rectangle(0, 0, formWidth, formHeight) };
-	nana::picture bg_inner{ bg_border, nana::rectangle(sideBorderWidth, topBarHeight, formWidth - (2 * sideBorderWidth), formHeight - topBarHeight - bottomBarHeight) };
-	nana::picture header_bar{ *this, true };
-	nana::label title_bar_label{ *this, true };
+	nana::picture bg_border{*this, nana::rectangle(0, 0, formWidth, formHeight)};
+	nana::picture bg_inner{bg_border, nana::rectangle(sideBorderWidth, topBarHeight, formWidth - (2 * sideBorderWidth), formHeight - topBarHeight - bottomBarHeight)};
+	nana::picture header_bar{*this, true};
+	nana::label title_bar_label{*this, true};
 	nana::dragger form_dragger;
-	nana::label form_drag_label{ *this, nana::rectangle(0, 0, formWidth, formHeight) };
+	nana::label form_drag_label{*this, nana::rectangle(0, 0, formWidth, formHeight)};
 	nana::paint::image img_min_normal;
 	nana::paint::image img_min_down;
 	nana::paint::image img_close_normal;
 	nana::paint::image img_close_down;
 	nana::paint::image img_header;
-	nana::picture close_button{ *this, nana::rectangle(0, 0, 20, 15) };
-	nana::picture min_button{ *this, nana::rectangle(0, 0, 20, 15) };
+	nana::picture close_button{*this, nana::rectangle(0, 0, 20, 15)};
+	nana::picture min_button{*this, nana::rectangle(0, 0, 20, 15)};
 
 	//form elements
 	//start button
-	nana::button startBtn{ *this, nana::rectangle(18, 165, 80, 20) };
+	nana::button startBtn{*this, nana::rectangle(18, 165, 80, 20)};
 	//save button
-	nana::button saveBtn{ *this, nana::rectangle(18, 195, 80, 20) };
+	nana::button saveBtn{*this, nana::rectangle(18, 195, 80, 20)};
 	//port label
-	nana::label portLbl{ *this, nana::rectangle(138, 87, 70, 20) };
+	nana::label portLbl{*this, nana::rectangle(138, 87, 70, 20)};
 	//port combobox
-	nana::combox portCb{ *this, nana::rectangle(208, 85, 70, 20) };
+	nana::combox portCb{*this, nana::rectangle(208, 85, 70, 20)};
 	//status
-	nana::label statusLbl{ *this, nana::rectangle(18, 137, 270, 20) };
+	nana::label statusLbl{*this, nana::rectangle(18, 137, 270, 20)};
 	//timer
 	nana::timer m_timer;
 
@@ -111,8 +112,8 @@ private:
 
 	// TODO: Now add your UI controls here
 
-	SDRunoPlugin_RemoteBridgeUi & m_parent;
-	IUnoPluginController & m_controller;
+	SDRunoPlugin_RemoteBridgeUi &m_parent;
+	IUnoPluginController &m_controller;
 
 	double m_timerCount;
 
